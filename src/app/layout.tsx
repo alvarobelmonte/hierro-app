@@ -5,6 +5,15 @@ import BottomNav from "@/components/bottom-nav";
 export const metadata: Metadata = {
     title: "Hierro",
     description: "Fatigue-Proof Workout Tracker",
+    manifest: "/manifest.json",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "Hierro",
+    },
+    icons: {
+        apple: "/icons/icon-192x192.png",
+    },
 };
 
 export const viewport: Viewport = {

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, ChevronRight, Dumbbell } from 'lucide-react'
+import CalendarHeatmap from '@/components/calendar-heatmap'
 
 export default async function HistorialPage() {
     const supabase = await createClient()
@@ -14,7 +15,7 @@ export default async function HistorialPage() {
         redirect('/login')
     }
 
-    // Obtener las últimas 20 sesiones
+    // Obtener las últimas sesiones para el historial y heatmap
     const { data: sesiones } = await supabase
         .from('sesiones')
         .select(`
@@ -27,7 +28,7 @@ export default async function HistorialPage() {
     `)
         .eq('usuario_id', user.id)
         .order('fecha', { ascending: false })
-        .limit(20)
+        .limit(100) // Pedimos más para el calendario navegable
 
     // Generar datos para el heatmap (últimos 3 meses)
     const today = new Date()
@@ -43,31 +44,7 @@ export default async function HistorialPage() {
             </header>
 
             {/* Mini Heatmap Section */}
-            <section className="glass rounded-3xl p-6 space-y-4">
-                <h2 className="text-[10px] uppercase font-black tracking-[0.2em] text-white/30 flex items-center gap-2">
-                    <Calendar size={12} className="text-primary" />
-                    Actividad Reciente
-                </h2>
-                <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 28 }).map((_, i) => {
-                        const date = new Date()
-                        date.setDate(today.getDate() - (27 - i))
-                        const dateStr = date.toISOString().split('T')[0]
-                        const isActive = activeDates.has(dateStr)
-
-                        return (
-                            <div
-                                key={i}
-                                className={`aspect-square rounded-sm transition-all duration-500 ${isActive
-                                    ? 'bg-primary shadow-[0_0_10px_rgba(32,217,212,0.4)] scale-110'
-                                    : 'bg-white/5'
-                                    }`}
-                                title={dateStr}
-                            />
-                        )
-                    })}
-                </div>
-            </section>
+            <CalendarHeatmap activeDates={activeDates} />
 
             {/* Session List */}
             <div className="space-y-4">

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
 import { Dumbbell, Calendar, History } from "lucide-react";
+import CalendarHeatmap from "@/components/calendar-heatmap";
 
 export default async function Home() {
     const supabase = await createClient();
@@ -33,28 +34,7 @@ export default async function Home() {
             </header>
 
             {/* Activity Section (Heatmap) */}
-            <section className="glass rounded-3xl p-6 space-y-4">
-                <h2 className="text-[10px] uppercase font-black tracking-[0.2em] text-white/30 flex items-center gap-2">
-                    <Calendar size={12} className="text-primary" />
-                    Consistencia
-                </h2>
-                <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 28 }).map((_, i) => {
-                        const date = new Date();
-                        date.setDate(today.getDate() - (27 - i));
-                        const dateStr = date.toISOString().split('T')[0];
-                        const isActive = activeDates.has(dateStr);
-
-                        return (
-                            <div
-                                key={i}
-                                className={`aspect-square rounded-sm transition-all duration-700 ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(32,217,212,0.3)]' : 'bg-white/5'
-                                    }`}
-                            />
-                        );
-                    })}
-                </div>
-            </section>
+            <CalendarHeatmap activeDates={activeDates} />
 
             {/* Quick Start Card */}
             <section className="glass rounded-3xl p-6 border-l-4 border-primary bg-gradient-to-br from-primary/5 to-transparent">
